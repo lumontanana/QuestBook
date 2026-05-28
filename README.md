@@ -19,6 +19,7 @@ Construir un sistema que permita:
 - Dividir el contenido en chunks de texto.
 - Generar embeddings con OpenAI.
 - Guardar los vectores y la metadata en Milvus.
+- Reindexar libros sin duplicar chunks existentes.
 - Recuperar los chunks mas relevantes para una pregunta.
 - Responder usando un modelo LLM con contexto del libro.
 
@@ -165,6 +166,10 @@ Indexa los libros:
 questbook ingest-pdf data/raw
 ```
 
+Si vuelves a indexar un PDF ya existente, QuestBook reemplaza los chunks anteriores de ese archivo en Milvus antes de insertar los nuevos. Esto evita duplicados al reindexar.
+
+Si un PDF esta corrupto o no se puede leer, se omite y la ingesta continua con el resto de archivos.
+
 Pregunta desde la CLI:
 
 ```powershell
@@ -248,5 +253,8 @@ mypy src
 
 - El modelo `text-embedding-3-large` no se descarga localmente; se consume mediante la API de OpenAI.
 - Milvus guarda los vectores y la metadata de cada chunk.
+- Cada chunk guarda metadata como `source`, `book_title`, `page`, `chunk_index` y `chunk_id`.
+- `chunk_index` se reinicia por archivo y pagina, por ejemplo `libro.pdf:page-3:chunk-0`.
+- Reindexar un archivo reemplaza sus chunks previos en Milvus.
 - La UI no permite subir PDFs: la biblioteca se administra desde `data/raw`.
 - Si cambias el modelo de embeddings, conviene recrear o reindexar la coleccion de Milvus.

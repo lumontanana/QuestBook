@@ -4,6 +4,15 @@ from langchain_milvus import Milvus
 from questbook.settings import Settings
 
 
+def escape_milvus_string(value: str) -> str:
+    return value.replace("\\", "\\\\").replace('"', '\\"')
+
+
+def delete_by_source(vectorstore: Milvus, source: str) -> None:
+    escaped_source = escape_milvus_string(source)
+    vectorstore.delete(expr=f'source == "{escaped_source}"')
+
+
 def get_vectorstore(settings: Settings, embeddings: Embeddings) -> Milvus:
     connection_args: dict[str, str] = {"uri": settings.milvus_uri}
     if settings.milvus_token:
