@@ -37,7 +37,8 @@ services:
     volumes:
       - ./data:/app/data
     depends_on:
-      - milvus
+      milvus:
+        condition: service_healthy
 
   streamlit:
     build: .
