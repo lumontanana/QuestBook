@@ -34,7 +34,6 @@ class Settings(BaseSettings):
     llamacpp_base_url: str = "http://localhost:8080/v1"
 
     data_dir: Path = Field(default=Path("data"))
-    ingest_root: Path = Field(default=Path("data"))
     chunk_size: int = 1000
     chunk_overlap: int = 150
     top_k: int = 4

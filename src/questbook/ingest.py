@@ -26,16 +26,6 @@ CODE_SUFFIXES = {
 }
 
 
-def validate_ingest_path(path: Path, root: Path) -> Path:
-    resolved = path.expanduser().resolve()
-    resolved_root = root.expanduser().resolve()
-
-    if not resolved.is_relative_to(resolved_root):
-        raise ValueError("path not allowed")
-
-    return resolved
-
-
 def load_text_or_code(path: Path) -> list[Document]:
     docs = TextLoader(str(path), encoding="utf-8", autodetect_encoding=True).load()
     for doc in docs:
@@ -59,7 +49,6 @@ def ingest_path(
     path: Path, include_code: bool = False, settings: Settings | None = None
 ) -> tuple[int, int]:
     settings = settings or get_settings()
-    path = validate_ingest_path(path, settings.ingest_root)
     files = discover_files(path, include_code=include_code)
     documents: list[Document] = []
 

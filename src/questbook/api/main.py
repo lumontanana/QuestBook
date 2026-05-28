@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 
-from questbook.ingest import ingest_path, validate_ingest_path
+from questbook.ingest import ingest_path
 from questbook.logging import configure_logging
 from questbook.models import AskRequest, AskResponse, IngestResponse
 from questbook.qa import ask
@@ -27,10 +27,5 @@ def ask_question(payload: AskRequest) -> AskResponse:
 
 @app.post("/ingest/path", response_model=IngestResponse)
 def ingest_existing_path(path: str, include_code: bool = False) -> IngestResponse:
-    try:
-        validated_path = validate_ingest_path(Path(path), settings.ingest_root)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail="path not allowed") from exc
-
-    files, chunks = ingest_path(validated_path, include_code=include_code, settings=settings)
+    files, chunks = ingest_path(Path(path), include_code=include_code, settings=settings)
     return IngestResponse(files=files, chunks=chunks, collection=settings.milvus_collection)
