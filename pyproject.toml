@@ -12,7 +12,6 @@ dependencies = [
   "cohere>=5.5.0",
   "charset-normalizer>=3.3.0",
   "fastapi>=0.111.0",
-  "gradio>=4.36.0",
   "langchain>=0.2.11",
   "langchain-cohere>=0.1.9",
   "langchain-community>=0.2.10",
