@@ -1,4 +1,4 @@
-"""QuestBook: RAG sobre PDFs y codigo fuente."""
+"""QuestBook: RAG sobre PDFs."""
 
 __all__ = ["__version__"]
 

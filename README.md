@@ -81,7 +81,6 @@ QuestBook/
 |       |   `-- main.py
 |       |-- __init__.py
 |       |-- cli.py
-|       |-- code_parser.py
 |       |-- ingest.py
 |       |-- logging.py
 |       |-- models.py
