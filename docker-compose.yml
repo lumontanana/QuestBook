@@ -19,7 +19,6 @@ services:
     ports:
       - "19530:19530"
       - "9091:9091"
-      - "2379:2379"
     volumes:
       - ./volumes/milvus:/var/lib/milvus
       - ./embedEtcd.yaml:/milvus/configs/embedEtcd.yaml
@@ -38,7 +37,8 @@ services:
     volumes:
       - ./data:/app/data
     depends_on:
-      - milvus
+      milvus:
+        condition: service_healthy
 
   streamlit:
     build: .

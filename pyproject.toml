@@ -5,13 +5,13 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "questbook"
 version = "0.1.0"
-description = "RAG sobre PDFs y codigo fuente con FastAPI, Typer, Streamlit, Gradio y Milvus."
+description = "RAG sobre PDFs con FastAPI, Typer, Streamlit y Milvus."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
   "cohere>=5.5.0",
+  "charset-normalizer>=3.3.0",
   "fastapi>=0.111.0",
-  "gradio>=4.36.0",
   "langchain>=0.2.11",
   "langchain-cohere>=0.1.9",
   "langchain-community>=0.2.10",
@@ -29,8 +29,6 @@ dependencies = [
   "sentence-transformers>=3.0.1",
   "streamlit>=1.36.0",
   "structlog>=24.2.0",
-  "tree-sitter>=0.22.3",
-  "tree-sitter-python>=0.21.0",
   "typer>=0.12.3",
   "uvicorn[standard]>=0.30.1"
 ]

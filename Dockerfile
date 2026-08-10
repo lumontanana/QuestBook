@@ -14,8 +14,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY pyproject.toml README.md ./
 COPY src ./src
 COPY apps ./apps
-COPY data ./data
 
 RUN pip install --upgrade pip && pip install -e ".[dev]"
 
-EXPOSE 8000 8501 7860
+EXPOSE 8000 8501

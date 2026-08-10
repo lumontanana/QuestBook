@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import structlog
 from langchain_community.document_loaders import TextLoader
 from langchain_core.documents import Document
 
@@ -7,7 +8,9 @@ from questbook.pdf_loader import extract_pdf_pages
 from questbook.providers import get_embeddings
 from questbook.settings import Settings, get_settings
 from questbook.splitter import split_documents
-from questbook.vectorstore import get_vectorstore
+from questbook.vectorstore import delete_by_source, get_vectorstore
+
+logger = structlog.get_logger(__name__)
 
 CODE_SUFFIXES = {
     ".py",
@@ -53,15 +56,27 @@ def ingest_path(
     documents: list[Document] = []
 
     for file in files:
-        if file.suffix.lower() == ".pdf":
-            documents.extend(extract_pdf_pages(file))
-        elif include_code:
-            documents.extend(load_text_or_code(file))
+        try:
+            if file.suffix.lower() == ".pdf":
+                loaded_documents = extract_pdf_pages(file)
+            elif include_code:
+                loaded_documents = load_text_or_code(file)
+            else:
+                loaded_documents = []
+        except Exception as exc:
+            logger.warning("ingest_file_failed", file=str(file), error=str(exc))
+            continue
+
+        logger.info("ingest_file_loaded", file=str(file), documents=len(loaded_documents))
+        documents.extend(loaded_documents)
 
     if not documents:
         return 0, 0
 
     chunks = split_documents(documents, settings)
     vectorstore = get_vectorstore(settings, get_embeddings(settings))
+    sources = {str(chunk.metadata["source"]) for chunk in chunks if "source" in chunk.metadata}
+    for source in sources:
+        delete_by_source(vectorstore, source)
     vectorstore.add_documents(chunks)
     return len(files), len(chunks)
